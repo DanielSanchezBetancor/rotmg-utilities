@@ -3,23 +3,29 @@ const project = 'file:///C:/Users/Baifo/OneDrive/Escritorio/Programacion/proyect
 const html = '<tr>' +
 '<td>{{name}}</td>' +
 '<td>{{quantity}}</td>' +
-'<td><button class="btn btn-primary" id="substract-one" value="{{id}}">-</button></td>' +
-'</tr>';
+'<td><div class="row">' +
+'<button class="btn btn-primary mr-1" id="substract-one" value="{{id}}">-</button>' +
+'<button class="btn btn-danger" id="add-one" value="{{id}}">+</button></td>' +
+'</div></tr>';
 //Auxiliar functions
 eventButtons = function() {
     var substractButtons = document.querySelectorAll('#substract-one');
     for(var i = 0;i < substractButtons.length;i++) {
         substractButtons[i].addEventListener('click', substractOne);
     }
+    var addtButtons = document.querySelectorAll('#add-one');
+    for(var i = 0;i < addtButtons.length;i++) {
+        addtButtons[i].addEventListener('click', addOne);
+    }
 }
 fillTable = function() {
     var quests = getQuests();
     var table = '';
     for (var i = 0;i<quests.length;i++) {
-        var dungeon = getQuestData(quests[i][0].id);
+        var dungeon = getQuest(quests[i][0].id);
         table += html.replace('{{name}}', dungeon.name);
         table = table.replace('{{quantity}}', quests[i][0].quantity);
-        table = table.replace('{{id}}', dungeon.id);
+        table = table.replaceAll('{{id}}', dungeon.id);
     }
     document.getElementById('quest-table').getElementsByTagName('tbody')[0].innerHTML = table;
 }
@@ -39,14 +45,31 @@ cleanQuests = function() {
 }
 substractOne = function(event) {
     //Take data
-    var parsedQuests = getParsedQuests();
+    var quests = getQuests();
     //Loop data and search for the id
-    for (var i = 0;i < parsedQuests.length;i++) {
-        if (parsedQuests[i][0].id === event.target.getAttribute('value')) {
-            console.log("Encontrado");
+    for (var i = 0;i < quests.length;i++) {
+        if (quests[i][0].id === event.target.getAttribute('value')) {
+            var quest = quests[i][0];
+            quest.quantity--;
+            editQuest(quest);
         }
     }
-
+    fillTable();
+    eventButtons();
+}
+addOne = function(event) {
+    //Take data
+    var quests = getQuests();
+    //Loop data and search for the id
+    for (var i = 0;i < quests.length;i++) {
+        if (quests[i][0].id === event.target.getAttribute('value')) {
+            var quest = quests[i][0];
+            quest.quantity++;
+            editQuest(quest);
+        }
+    }
+    fillTable();
+    eventButtons();
 }
 //Events
 document.getElementById('añadir-maz').addEventListener('click', redirect);
