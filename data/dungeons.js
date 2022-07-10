@@ -33,7 +33,7 @@ getQuests = function() {
     }
     return quests;
 }
-getQuestData = function(idQuest) {
+getQuest = function(idQuest) {
     var arr = dungeons.dungeons;
     for (var i = 0;i < arr.length;i++) {
         if (arr[i].id === idQuest) {
@@ -41,4 +41,24 @@ getQuestData = function(idQuest) {
         }
     }
     return false;
+}
+editQuest = function(quest) {
+    var newQuests = [];
+    var quests = getQuests();
+    for(var i = 0;i < quests.length;i++) {
+        if (quest.quantity > 0) {
+            var questToPush = quests[i][0];
+            if (quests[i][0].id == quest.id) {
+                questToPush = quest;
+            } 
+            newQuests.push([{
+                'id': questToPush.id,
+                'quantity': questToPush.quantity
+            }]);
+        }
+    }
+    saveQuests(newQuests);
+}
+saveQuests = function(quests) {
+    localStorage.setItem('quests', JSON.stringify(quests));
 }
